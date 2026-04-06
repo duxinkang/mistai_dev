@@ -113,6 +113,7 @@ function SectionHeading({ id, title, description }: { id: string; title: string;
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -121,18 +122,25 @@ function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <div
-        className={`mx-auto flex max-w-[1440px] items-center justify-between px-5 py-4 transition-all duration-300 md:px-10 ${
-          scrolled ? "mt-3 rounded-2xl bg-white/92 text-slate-900 shadow-[0_12px_40px_rgba(15,23,42,0.12)] backdrop-blur" : "text-white"
+        className={`mx-auto flex max-w-[1440px] items-center justify-between px-4 py-3 transition-all duration-300 md:px-10 md:py-4 ${
+          scrolled || menuOpen ? "mt-2 rounded-2xl bg-white/92 text-slate-900 shadow-[0_12px_40px_rgba(15,23,42,0.12)] backdrop-blur md:mt-3" : "text-white"
         }`}
       >
         <a href="#" className="flex items-center gap-3 text-2xl font-medium md:gap-4">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white p-2 shadow-[0_8px_28px_rgba(15,23,42,0.16)] ring-1 ring-black/5 md:h-16 md:w-16">
+          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white p-2 shadow-[0_8px_28px_rgba(15,23,42,0.16)] ring-1 ring-black/5 md:h-16 md:w-16">
             <img src={asset("/mistlogo.png")} alt="MIST Ai" className="h-full w-full object-contain" />
           </span>
-          <span className="hidden text-[1.15rem] font-semibold tracking-[-0.02em] md:inline">MIST Ai</span>
+          <span className="text-base font-semibold tracking-[-0.02em] md:text-[1.15rem]">MIST Ai</span>
         </a>
         <nav className="hidden items-center gap-10 text-sm md:flex">
           {navItems.map((item) => (
@@ -151,7 +159,43 @@ function Header() {
         >
           联系我们
         </a>
+        <button
+          type="button"
+          aria-label={menuOpen ? "关闭菜单" : "打开菜单"}
+          className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/25 bg-white/10 text-current backdrop-blur md:hidden"
+          onClick={() => setMenuOpen((current) => !current)}
+        >
+          <span className="sr-only">{menuOpen ? "关闭菜单" : "打开菜单"}</span>
+          <div className="flex flex-col gap-1.5">
+            <span className={`block h-0.5 w-5 bg-current transition ${menuOpen ? "translate-y-2 rotate-45" : ""}`} />
+            <span className={`block h-0.5 w-5 bg-current transition ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block h-0.5 w-5 bg-current transition ${menuOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+          </div>
+        </button>
       </div>
+      {menuOpen ? (
+        <div className="mx-auto mt-2 max-w-[calc(100%-24px)] rounded-2xl bg-white px-4 py-4 shadow-[0_18px_50px_rgba(15,23,42,0.14)] md:hidden">
+          <nav className="flex flex-col gap-2">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="rounded-xl px-3 py-3 text-sm font-medium text-slate-900 transition hover:bg-slate-50"
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </a>
+            ))}
+            <a
+              href="#contact"
+              className="mt-2 inline-flex items-center justify-center rounded-xl bg-[#1e88e5] px-4 py-3 text-sm font-medium text-white"
+              onClick={() => setMenuOpen(false)}
+            >
+              联系我们
+            </a>
+          </nav>
+        </div>
+      ) : null}
     </header>
   );
 }
@@ -160,16 +204,16 @@ function Hero() {
   const chars = useMemo(() => hero.titleFocus.split(""), []);
 
   return (
-    <section className="relative mb-20 h-screen overflow-hidden">
+    <section className="relative mb-14 min-h-screen overflow-hidden md:mb-20">
       <video className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline>
         <source src={asset("/background.mp4")} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-black/28" />
       <div className="hero-gradient absolute inset-0" />
-      <div className="relative z-10 mx-auto grid h-full max-w-[1440px] grid-cols-1 px-6 pt-28 pb-16 md:grid-cols-[1.1fr_1.4fr_0.8fr_0.7fr] md:px-16 md:pt-36">
-        <div />
-        <div className="flex flex-col justify-center gap-7 md:gap-9">
-          <h1 className="font-display animate-rise text-[clamp(2.7rem,8vw,4.65rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-white">
+      <div className="relative z-10 mx-auto grid h-full max-w-[1440px] grid-cols-1 px-5 pt-28 pb-14 md:grid-cols-[1.1fr_1.4fr_0.8fr_0.7fr] md:px-16 md:pt-36 md:pb-16">
+        <div className="hidden md:block" />
+        <div className="flex min-h-[100svh] flex-col justify-center gap-6 md:min-h-0 md:gap-9">
+          <h1 className="font-display animate-rise text-[clamp(2.35rem,10vw,4.65rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-white">
             {hero.titlePrefix}
             <span className="inline-block text-[#1de9b6]">
               {" "}
@@ -185,9 +229,17 @@ function Hero() {
             </span>{" "}
             {hero.titleSuffix}
           </h1>
-          <p className="animate-rise animation-delay-200 max-w-xl text-[1.06rem] leading-8 text-white/88 md:text-[1.15rem]">
+          <p className="animate-rise animation-delay-200 max-w-xl text-[0.98rem] leading-7 text-white/88 md:text-[1.15rem] md:leading-8">
             {hero.description}
           </p>
+          <div className="animate-rise animation-delay-200 flex flex-wrap gap-3 pt-2 md:hidden">
+            <a href="#services" className="rounded-full bg-[#1de9b6] px-4 py-2 text-sm font-semibold text-slate-950">
+              查看服务
+            </a>
+            <a href="#contact" className="rounded-full border border-white/60 px-4 py-2 text-sm font-semibold text-white">
+              联系我们
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -202,17 +254,17 @@ function Services() {
         title="我们的服务"
         description="我们期待与各类团队携手，攻克不同复杂程度的项目。通过合作，我们会打造全新系统、解决方案与产品，助您在竞争中脱颖而出。"
       />
-      <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-5 md:grid-cols-2 md:gap-8 xl:grid-cols-3">
         {services.map((service, index) => (
           <Reveal key={service.title} delay={index * 70}>
-            <article className="h-full rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="mb-8 flex items-center gap-6">
+            <article className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl md:p-8">
+              <div className="mb-6 flex items-center gap-4 md:mb-8 md:gap-6">
                 <div className="rounded-2xl border-2 border-[#26c6da] p-2">
                   <img src={asset(service.icon)} alt="" className="h-12 w-12 object-contain" />
                 </div>
-                <h3 className="text-xl font-semibold text-slate-900">{service.title}</h3>
+                <h3 className="text-lg font-semibold text-slate-900 md:text-xl">{service.title}</h3>
               </div>
-              <p className="leading-8 text-slate-500">{service.content}</p>
+              <p className="text-sm leading-7 text-slate-500 md:text-base md:leading-8">{service.content}</p>
             </article>
           </Reveal>
         ))}
@@ -225,7 +277,7 @@ function Customers() {
   return (
     <section className="section-shell">
       <SectionHeading id="customers" title="真实客户，真实影响" />
-      <div className="grid gap-10 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 md:gap-10">
         {customers.map((customer, index) => (
           <Reveal key={customer.title} delay={index * 90}>
             <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-lg">
@@ -234,7 +286,7 @@ function Customers() {
                   <img src={asset(customer.image)} alt={customer.title} className="aspect-video w-full object-cover transition duration-500 hover:scale-[1.02]" />
                 </div>
                 <div>
-                  <h3 className="mb-3 text-3xl font-bold text-slate-950">{customer.title}</h3>
+                  <h3 className="mb-3 text-2xl font-bold text-slate-950 md:text-3xl">{customer.title}</h3>
                   <div className="mb-3 flex flex-wrap gap-2">
                     {customer.tags.map((tag) => (
                       <span key={tag} className="rounded bg-[#1de9b6]/15 px-2 py-1 text-xs font-medium text-[#1e88e5]">
@@ -242,8 +294,8 @@ function Customers() {
                       </span>
                     ))}
                   </div>
-                  <p className="mb-2 text-lg font-semibold text-slate-900">{customer.subtitle}</p>
-                  <p className="leading-8 text-slate-500">{customer.description}</p>
+                  <p className="mb-2 text-base font-semibold text-slate-900 md:text-lg">{customer.subtitle}</p>
+                  <p className="text-sm leading-7 text-slate-500 md:text-base md:leading-8">{customer.description}</p>
                 </div>
               </div>
             </article>
@@ -265,15 +317,15 @@ function Process() {
         description="丰富的互联网服务经验，让我们对项目实施的标准化有更多的理解。"
       />
       <Reveal>
-        <div ref={scrollerRef} className="carousel-track hide-scrollbar flex gap-14 overflow-x-auto pb-8">
+        <div ref={scrollerRef} className="carousel-track hide-scrollbar flex gap-6 overflow-x-auto pb-8 md:gap-14">
           {processSteps.map((step, index) => (
-            <article key={step.title} className="min-w-[260px] max-w-[260px] flex-none">
-              <img src={asset(step.image)} alt={step.title} className="mb-4 aspect-square h-[260px] w-[260px] object-contain" />
-              <h3 className="mb-3 flex items-center gap-4 text-[1.7rem] font-semibold text-slate-950">
+            <article key={step.title} className="min-w-[220px] max-w-[220px] flex-none md:min-w-[260px] md:max-w-[260px]">
+              <img src={asset(step.image)} alt={step.title} className="mb-4 aspect-square h-[220px] w-[220px] object-contain md:h-[260px] md:w-[260px]" />
+              <h3 className="mb-3 flex items-center gap-3 text-[1.35rem] font-semibold text-slate-950 md:gap-4 md:text-[1.7rem]">
                 <span className="text-sm text-[#1e88e5]">{String(index + 1).padStart(2, "0")}</span>
                 {step.title}
               </h3>
-              <p className="text-sm leading-8 text-slate-500">{step.tags.join("，")}</p>
+              <p className="text-sm leading-7 text-slate-500 md:leading-8">{step.tags.join("，")}</p>
             </article>
           ))}
         </div>
@@ -313,13 +365,13 @@ function About() {
         description="我们是AI Native的倡导者、远程协作的执行者以及友好人机互动的践行者。"
       />
       <Reveal>
-        <div ref={dragRef} className="carousel-track hide-scrollbar flex gap-4 overflow-x-auto rounded-2xl pb-6">
+        <div ref={dragRef} className="carousel-track hide-scrollbar flex gap-3 overflow-x-auto rounded-2xl pb-6 md:gap-4">
           {teamMembers.map((member) => (
-            <figure key={member.name} className="relative h-[480px] w-[360px] flex-none overflow-hidden rounded-2xl bg-slate-100 md:h-[520px] md:w-[390px]">
+            <figure key={member.name} className="relative h-[340px] w-[240px] flex-none overflow-hidden rounded-2xl bg-slate-100 sm:h-[420px] sm:w-[300px] md:h-[520px] md:w-[390px]">
               <img src={asset(member.image)} alt={member.name} className="h-full w-full object-cover" />
               <figcaption className="absolute left-4 bottom-4 text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.55)]">
-                <h4 className="font-display text-2xl font-semibold">{member.name}</h4>
-                <p className="text-lg font-semibold">{member.role}</p>
+                <h4 className="font-display text-xl font-semibold md:text-2xl">{member.name}</h4>
+                <p className="text-sm font-semibold md:text-lg">{member.role}</p>
               </figcaption>
             </figure>
           ))}
@@ -339,7 +391,7 @@ function TechStacks() {
   return (
     <section className="section-shell">
       <SectionHeading id="tech" title="我们的AI技术栈" />
-      <Reveal>
+      <Reveal className="hidden md:block">
         <div className="hide-scrollbar flex flex-col gap-5 overflow-x-auto">
           {techStacks.map((stack) => (
             <div key={stack.title} className="grid min-w-[960px] grid-cols-[84px_1fr] gap-4">
@@ -361,6 +413,22 @@ function TechStacks() {
           ))}
         </div>
       </Reveal>
+      <div className="grid gap-4 md:hidden">
+        {techStacks.map((stack, stackIndex) => (
+          <Reveal key={stack.title} delay={stackIndex * 60}>
+            <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <h3 className="mb-4 inline-flex rounded-full bg-[#1e88e5] px-3 py-1 text-sm font-semibold text-white">{stack.title}</h3>
+              <div className="flex flex-wrap gap-2">
+                {stack.columns.flat().map((item) => (
+                  <span key={`${stack.title}-${item}`} className="rounded-full bg-[#1de9b6]/14 px-3 py-2 text-sm font-medium text-[#1e88e5]">
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </section>
+          </Reveal>
+        ))}
+      </div>
     </section>
   );
 }
@@ -465,18 +533,18 @@ function Contact() {
     <section id="contact" className="relative mt-8 overflow-hidden contact-surface">
       <div className="absolute inset-0 bg-white/84" />
       <div className="section-shell relative z-10 py-16 md:py-24">
-        <div className="grid items-center gap-10 md:grid-cols-[1fr_minmax(360px,560px)]">
+        <div className="grid items-start gap-8 md:grid-cols-[1fr_minmax(360px,560px)] md:gap-10">
           <Reveal className="space-y-6">
-            <h2 className="font-display text-4xl font-semibold text-slate-950 md:text-5xl">开始合作</h2>
-            <p className="max-w-xl text-lg leading-8 text-slate-500">欢迎直接通过电话、地址或微信二维码联系我们。</p>
+            <h2 className="font-display text-3xl font-semibold text-slate-950 md:text-5xl">开始合作</h2>
+            <p className="max-w-xl text-base leading-7 text-slate-500 md:text-lg md:leading-8">欢迎直接通过电话、地址或微信二维码联系我们。</p>
             <div className="space-y-4 rounded-3xl border border-white/70 bg-white/70 px-5 py-5 shadow-sm backdrop-blur">
               <div>
                 <p className="text-sm font-medium text-slate-500">电话</p>
-                <p className="mt-1 text-lg font-semibold text-slate-950">15622153144</p>
+                <p className="mt-1 break-all text-base font-semibold text-slate-950 md:text-lg">15622153144</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-500">地址</p>
-                <p className="mt-1 text-lg font-semibold text-slate-950">杭州滨江山科智能大厦10楼迷雾智能</p>
+                <p className="mt-1 text-base font-semibold leading-7 text-slate-950 md:text-lg">杭州滨江山科智能大厦10楼迷雾智能</p>
               </div>
               <div className="flex items-center gap-4 pt-1">
                 <img src={asset("/weixin.png")} alt="微信" className="h-12 w-12" />
@@ -488,7 +556,7 @@ function Contact() {
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <div className="rounded-[28px] bg-white px-8 py-10 shadow-[0_24px_80px_rgba(15,23,42,0.12)] md:px-10 md:py-12">
+            <div className="rounded-[28px] bg-white px-5 py-6 shadow-[0_24px_80px_rgba(15,23,42,0.12)] md:px-10 md:py-12">
               <h3 className="mb-3 text-2xl font-semibold text-slate-950">获取方案</h3>
               <p className="mb-8 text-slate-500">完善您的信息，方便我们为您提供专业的业务方案</p>
               <ContactForm />
