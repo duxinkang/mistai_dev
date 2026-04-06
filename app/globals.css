@@ -4,8 +4,12 @@
   --background: #ffffff;
   --foreground: #0f172a;
   --muted: #64748b;
-  --primary: #00a63e;
-  --soft-primary: #9feec4;
+  --mint: #1de9b6;
+  --turquoise: #26c6da;
+  --sky: #29b6f6;
+  --gem: #1e88e5;
+  --primary: #1de9b6;
+  --soft-primary: #26c6da;
 }
 
 html {
@@ -14,7 +18,7 @@ html {
 
 body {
   background:
-    radial-gradient(circle at top, rgba(0, 166, 62, 0.05), transparent 26%),
+    radial-gradient(circle at top, rgba(29, 233, 182, 0.08), transparent 26%),
     var(--background);
   color: var(--foreground);
   font-family: "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
@@ -43,20 +47,18 @@ body {
 
 .soft-radial {
   background:
-    radial-gradient(circle at 30% 20%, rgba(159, 238, 196, 0.6), rgba(159, 238, 196, 0) 45%),
-    linear-gradient(135deg, #1d293d, #00a63e);
+    radial-gradient(circle at 30% 20%, rgba(38, 198, 218, 0.52), rgba(38, 198, 218, 0) 42%),
+    linear-gradient(135deg, #1e88e5, #1de9b6);
 }
 
 .hero-gradient {
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.22) 0%, rgba(0, 0, 0, 0.04) 38%, rgba(0, 0, 0, 0.18) 100%),
-    radial-gradient(circle at 70% 30%, rgba(0, 166, 62, 0.18), transparent 34%);
+    radial-gradient(circle at 70% 30%, rgba(41, 182, 246, 0.24), transparent 34%);
 }
 
 .contact-surface {
-  background:
-    linear-gradient(120deg, rgba(159, 238, 196, 0.25), rgba(255, 255, 255, 0.8)),
-    url("/customer/customer1.png") center/cover no-repeat;
+  background: white;
 }
 
 .section-shell article {
