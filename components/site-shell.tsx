@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { detectLocale, localeLabels, type Locale, siteCopy } from "@/lib/site-data";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const web3FormsAccessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? "";
 const asset = (path: string) => `${basePath}${path}`;
 
 type RevealProps = {
@@ -461,14 +462,38 @@ function ContactForm({ locale }: { locale: Locale }) {
     setErrors(nextErrors);
     setMessage("");
     if (Object.keys(nextErrors).length > 0) return;
+    if (!web3FormsAccessKey) {
+      setStatus("error");
+      setMessage(locale === "zh" ? "表单尚未完成邮箱配置，请先填写 Web3Forms Access Key。" : "The form is not configured yet. Please add the Web3Forms access key first.");
+      return;
+    }
 
     setStatus("submitting");
     try {
-      const historyKey = "mist-ai-contact-submissions";
-      const stored = window.localStorage.getItem(historyKey);
-      const history = stored ? JSON.parse(stored) : [];
-      history.push({ ...values, submittedAt: new Date().toISOString(), locale });
-      window.localStorage.setItem(historyKey, JSON.stringify(history));
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: web3FormsAccessKey,
+          subject: locale === "zh" ? "MIST Ai 官网新表单提交" : "New submission from MIST Ai website",
+          from_name: "MIST Ai Website",
+          name: values.name,
+          phone: values.phone,
+          email: values.email,
+          companyName: values.companyName,
+          locale,
+          replyto: values.email || undefined,
+        }),
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Submission failed");
+      }
+
       setStatus("success");
       setMessage(content.messages.success);
       setValues(initialFormState);

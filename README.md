@@ -39,20 +39,32 @@ npm run build
 
 `https://duxinkang.github.io/mistai_dev/`
 
-## 表单说明
+## 邮箱表单配置
 
-由于 GitHub Pages 是静态托管，项目中的联系表单采用纯前端提交逻辑：
+当前项目已接入 `Web3Forms`，适合 GitHub Pages 这类纯静态站点。
 
-- 先进行字段校验
-- 提交成功后把数据保存到当前浏览器的 `localStorage`
-- 不会自动写入服务器数据库
+官方文档：
 
-如果要接入真实线索收集，建议后续对接：
+- https://docs.web3forms.com/
+- https://docs.web3forms.com/getting-started/installation
+- https://docs.web3forms.com/how-to-guides/js-frameworks/react-js/simple-react-contact-form
 
-- Formspree
-- Basin
-- 自建 API
-- 飞书 / 企业微信 webhook
+配置步骤：
+
+1. 打开 `https://web3forms.com/`
+2. 用你的邮箱 `d541449473@gmail.com` 创建 Access Key
+3. 在 GitHub 仓库里进入 `Settings -> Secrets and variables -> Actions`
+4. 新建一个 Repository Secret：
+   `WEB3FORMS_ACCESS_KEY=你的_access_key`
+5. 重新运行 GitHub Pages 部署工作流，或重新 push 一次
+
+本地开发可使用：
+
+```bash
+cp .env.example .env.local
+```
+
+然后把 `.env.local` 里的 `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` 改成你的真实 key。
 
 ## 项目结构
 
