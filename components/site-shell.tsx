@@ -468,12 +468,22 @@ function Contact() {
         <div className="grid items-center gap-10 md:grid-cols-[1fr_minmax(360px,560px)]">
           <Reveal className="space-y-6">
             <h2 className="font-display text-4xl font-semibold text-slate-950 md:text-5xl">开始合作</h2>
-            <p className="max-w-xl text-lg leading-8 text-slate-500">告诉我们您的需求，让我们为您提供专业的解决方案</p>
-            <div className="inline-flex items-center gap-4 rounded-2xl border border-white/70 bg-white/70 px-4 py-4 shadow-sm backdrop-blur">
-              <img src={asset("/weixin.png")} alt="微信" className="h-12 w-12" />
+            <p className="max-w-xl text-lg leading-8 text-slate-500">欢迎直接通过电话、地址或微信二维码联系我们。</p>
+            <div className="space-y-4 rounded-3xl border border-white/70 bg-white/70 px-5 py-5 shadow-sm backdrop-blur">
               <div>
-                <p className="text-sm font-medium text-slate-900">扫码添加</p>
-                <img src={asset("/qrcode.png")} alt="二维码" className="mt-2 h-24 w-24 rounded-md border border-slate-200" />
+                <p className="text-sm font-medium text-slate-500">电话</p>
+                <p className="mt-1 text-lg font-semibold text-slate-950">15622153144</p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">地址</p>
+                <p className="mt-1 text-lg font-semibold text-slate-950">杭州滨江山科智能大厦10楼迷雾智能</p>
+              </div>
+              <div className="flex items-center gap-4 pt-1">
+                <img src={asset("/weixin.png")} alt="微信" className="h-12 w-12" />
+                <div>
+                  <p className="text-sm font-medium text-slate-500">扫码添加</p>
+                  <img src={asset("/qrcode.png")} alt="二维码" className="mt-2 h-24 w-24 rounded-md border border-slate-200" />
+                </div>
               </div>
             </div>
           </Reveal>
