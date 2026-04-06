@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { customers, hero, navItems, processSteps, services, teamMembers, techStacks } from "@/lib/site-data";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const asset = (path: string) => `${basePath}${path}`;
+
 type RevealProps = {
   children: React.ReactNode;
   className?: string;
@@ -127,7 +130,7 @@ function Header() {
       >
         <a href="#" className="flex items-center gap-3 text-2xl font-medium md:gap-4">
           <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white p-2 shadow-[0_8px_28px_rgba(15,23,42,0.16)] ring-1 ring-black/5 md:h-16 md:w-16">
-            <img src="/mistlogo.png" alt="MIST Ai" className="h-full w-full object-contain" />
+            <img src={asset("/mistlogo.png")} alt="MIST Ai" className="h-full w-full object-contain" />
           </span>
           <span className="hidden text-[1.15rem] font-semibold tracking-[-0.02em] md:inline">MIST Ai</span>
         </a>
@@ -159,7 +162,7 @@ function Hero() {
   return (
     <section className="relative mb-20 h-screen overflow-hidden">
       <video className="absolute inset-0 h-full w-full object-cover" autoPlay muted loop playsInline>
-        <source src="/background.mp4" type="video/mp4" />
+        <source src={asset("/background.mp4")} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-black/28" />
       <div className="hero-gradient absolute inset-0" />
@@ -205,7 +208,7 @@ function Services() {
             <article className="h-full rounded-3xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
               <div className="mb-8 flex items-center gap-6">
                 <div className="rounded-2xl border-2 border-[#00a63e] p-2">
-                  <img src={service.icon} alt="" className="h-12 w-12 object-contain" />
+                  <img src={asset(service.icon)} alt="" className="h-12 w-12 object-contain" />
                 </div>
                 <h3 className="text-xl font-semibold text-slate-900">{service.title}</h3>
               </div>
@@ -228,7 +231,7 @@ function Customers() {
             <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-lg">
               <div className="flex flex-col gap-6">
                 <div className="overflow-hidden rounded-2xl">
-                  <img src={customer.image} alt={customer.title} className="aspect-video w-full object-cover" />
+                  <img src={asset(customer.image)} alt={customer.title} className="aspect-video w-full object-cover transition duration-500 hover:scale-[1.02]" />
                 </div>
                 <div>
                   <h3 className="mb-3 text-3xl font-bold text-slate-950">{customer.title}</h3>
@@ -265,7 +268,7 @@ function Process() {
         <div ref={scrollerRef} className="carousel-track hide-scrollbar flex gap-14 overflow-x-auto pb-8">
           {processSteps.map((step, index) => (
             <article key={step.title} className="min-w-[260px] max-w-[260px] flex-none">
-              <img src={step.image} alt={step.title} className="mb-4 aspect-square h-[260px] w-[260px] object-contain" />
+              <img src={asset(step.image)} alt={step.title} className="mb-4 aspect-square h-[260px] w-[260px] object-contain" />
               <h3 className="mb-3 flex items-center gap-4 text-[1.7rem] font-semibold text-slate-950">
                 <span className="text-sm text-[#00a63e]">{String(index + 1).padStart(2, "0")}</span>
                 {step.title}
@@ -313,7 +316,7 @@ function About() {
         <div ref={dragRef} className="carousel-track hide-scrollbar flex gap-4 overflow-x-auto rounded-2xl pb-6">
           {teamMembers.map((member) => (
             <figure key={member.name} className="relative h-[480px] w-[360px] flex-none overflow-hidden rounded-2xl bg-slate-100 md:h-[520px] md:w-[390px]">
-              <img src={member.image} alt={member.name} className="h-full w-full object-cover" />
+              <img src={asset(member.image)} alt={member.name} className="h-full w-full object-cover" />
               <figcaption className="absolute left-4 bottom-4 text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.55)]">
                 <h4 className="font-display text-2xl font-semibold">{member.name}</h4>
                 <p className="text-lg font-semibold">{member.role}</p>
@@ -400,16 +403,17 @@ function ContactForm() {
 
     setStatus("submitting");
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+      const historyKey = "mist-ai-contact-submissions";
+      const stored = window.localStorage.getItem(historyKey);
+      const history = stored ? JSON.parse(stored) : [];
+      history.push({
+        ...values,
+        submittedAt: new Date().toISOString(),
       });
-
-      if (!response.ok) throw new Error("提交失败");
+      window.localStorage.setItem(historyKey, JSON.stringify(history));
 
       setStatus("success");
-      setMessage("提交成功，我们会尽快联系您");
+      setMessage("提交成功，内容已保存在当前浏览器中。若要正式收集线索，请接入真实表单服务。");
       setValues(initialFormState);
     } catch {
       setStatus("error");
@@ -466,10 +470,10 @@ function Contact() {
             <h2 className="font-display text-4xl font-semibold text-slate-950 md:text-5xl">开始合作</h2>
             <p className="max-w-xl text-lg leading-8 text-slate-500">告诉我们您的需求，让我们为您提供专业的解决方案</p>
             <div className="inline-flex items-center gap-4 rounded-2xl border border-white/70 bg-white/70 px-4 py-4 shadow-sm backdrop-blur">
-              <img src="/weixin.png" alt="微信" className="h-12 w-12" />
+              <img src={asset("/weixin.png")} alt="微信" className="h-12 w-12" />
               <div>
                 <p className="text-sm font-medium text-slate-900">扫码添加</p>
-                <img src="/qrcode.png" alt="二维码" className="mt-2 h-24 w-24 rounded-md border border-slate-200" />
+                <img src={asset("/qrcode.png")} alt="二维码" className="mt-2 h-24 w-24 rounded-md border border-slate-200" />
               </div>
             </div>
           </Reveal>

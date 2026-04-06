@@ -13,7 +13,9 @@ html {
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top, rgba(0, 166, 62, 0.05), transparent 26%),
+    var(--background);
   color: var(--foreground);
   font-family: "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
 }
@@ -55,6 +57,10 @@ body {
   background:
     linear-gradient(120deg, rgba(159, 238, 196, 0.25), rgba(255, 255, 255, 0.8)),
     url("/customer/customer1.png") center/cover no-repeat;
+}
+
+.section-shell article {
+  will-change: transform;
 }
 
 .animate-rise {
